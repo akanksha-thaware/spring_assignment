@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 @WebMvcTest(StudentController.class)
-public class StudentControllerTest {
+class StudentControllerTest {
 
     @Autowired
     ObjectMapper mapper;
