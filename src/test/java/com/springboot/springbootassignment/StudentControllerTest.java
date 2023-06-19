@@ -37,7 +37,7 @@ public class StudentControllerTest {
 
     //----------------test for GET all---------------
     @Test
-    public void getAllStudents_success() throws Exception {
+    void getAllStudents_success() throws Exception {
         List<Student> records = new ArrayList<>(Arrays.asList(s1, s2));
         Mockito.when(studentService.getAllStudents()).thenReturn(records);
         mockMvc.perform(get("/api/students/")
@@ -49,7 +49,7 @@ public class StudentControllerTest {
 
     //----------------test for GET Student by ID---------------
     @Test
-    public void getStudentById_success() throws Exception {
+    void getStudentById_success() throws Exception {
         Mockito.when(studentService.getStudentById(146)).thenReturn(s2);
         mockMvc.perform(get("/api/students/" + 146)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -60,7 +60,7 @@ public class StudentControllerTest {
     //----------------test for POST-------------
 
     @Test
-    public void createStudentTest() throws Exception {
+    void createStudentTest() throws Exception {
         Student record = new Student(150, "Raghav", "Narang", "r@gmail.com", "99817353610", set2);
         Mockito.when(studentService.createStudent(s3)).thenReturn(record);
         mockMvc.perform(post("/api/students")
@@ -73,7 +73,7 @@ public class StudentControllerTest {
 //    //----------------test for PUT-------------
 
     @Test
-    public void updateStudentTest() throws Exception {
+    void updateStudentTest() throws Exception {
         Student updatedrecord = new Student(150, "Raghav", "N", "raghav@gmail.com", "99817353610", set2);
         Student body = new Student(150, "Raghav", "N", "raghav@gmail.com", "99817353610", set2);
         Mockito.when(studentService.updateStudent(150, body)).thenReturn(updatedrecord);
@@ -85,11 +85,4 @@ public class StudentControllerTest {
                 .andExpect(jsonPath("lastName", is("N")));
     }
 
-//    @Test
-//    public void deleteStudentTest() throws Exception {
-//        Mockito.when(studentService.deleteStudent(1000));
-//        mockMvc.perform(delete("/api/students", 1000))
-//                .andExpect(status().isOk());
-//
-//    }
 }

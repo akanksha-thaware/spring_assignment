@@ -34,7 +34,7 @@ public class CourseControllerTest {
 //    List<Student> stu2 = new ArrayList<>(Arrays.asList(s1));
 
 //    @Before
-//public void init() {
+// void init() {
     // MOCK COURSES
     Course course1 = new Course(10, "DSA", 4);
     Course course2 = new Course(20, "OS", 3);
@@ -44,7 +44,7 @@ public class CourseControllerTest {
 
     //----------------test for GET all---------------
     @Test
-    public void getAllCourses_success() throws Exception {
+     void getAllCourses_success() throws Exception {
         List<Course> records = new ArrayList<>(Arrays.asList(course1, course2));
         Mockito.when(courseService.getAllCourses()).thenReturn(records);
         mockMvc.perform(get("/api/courses/")
@@ -57,7 +57,7 @@ public class CourseControllerTest {
 
     //----------------test for GET course by ID---------------
     @Test
-    public void getCourseById_success() throws Exception {
+     void getCourseById_success() throws Exception {
         Mockito.when(courseService.getCourseById(30)).thenReturn(course3);
         mockMvc.perform(get("/api/courses/" + 30)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -68,7 +68,7 @@ public class CourseControllerTest {
     //----------------test for POST-------------
 
     @Test
-    public void createCourseTest() throws Exception {
+     void createCourseTest() throws Exception {
         Course record = new Course(30, "Linux programming", 3);
         Mockito.when(courseService.createCourse(course3)).thenReturn(record);
         mockMvc.perform(post("/api/courses")

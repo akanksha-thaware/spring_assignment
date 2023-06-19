@@ -1,7 +1,6 @@
 package com.springboot.springbootassignment.controller;
 import com.springboot.springbootassignment.entity.Course;
 import com.springboot.springbootassignment.service.CourseService;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import lombok.Data;
 import java.util.List;
