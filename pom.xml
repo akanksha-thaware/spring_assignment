@@ -20,8 +20,7 @@
 		<sonar.organization>akanksha-thaware</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.projectKey>akanksha-thaware_springboot-assignment</sonar.projectKey>
-		<sonar.exclusions>src/main/java/com/springboot/springbootassignment/entity/*</sonar.exclusions>
-		<sonar.exclusions>src/main/java/com/springboot/springbootassignment/service/*</sonar.exclusions>
+		<sonar.exclusions>src/main/java/com/springboot/springbootassignment/entity/*,src/main/java/com/springboot/springbootassignment/service/*</sonar.exclusions>
 	</properties>
 	<dependencies>
 		<dependency>

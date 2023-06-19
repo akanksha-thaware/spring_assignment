@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 @WebMvcTest(StudentController.class)
 public class StudentControllerTest {
@@ -59,7 +60,7 @@ public class StudentControllerTest {
     //----------------test for POST-------------
 
     @Test
-    public void  createStudentTest() throws Exception {
+    public void createStudentTest() throws Exception {
         Student record = new Student(150, "Raghav", "Narang", "r@gmail.com", "99817353610", set2);
         Mockito.when(studentService.createStudent(s3)).thenReturn(record);
         mockMvc.perform(post("/api/students")
@@ -84,13 +85,11 @@ public class StudentControllerTest {
                 .andExpect(jsonPath("lastName", is("N")));
     }
 
-//    //----------------test for DELETE-------------
-//
 //    @Test
 //    public void deleteStudentTest() throws Exception {
-//        Mockito.when(studentService.deleteStudent(145));
-//        mockMvc.perform(delete("/api/students/" + 145)
+//        Mockito.when(studentService.deleteStudent(1000));
+//        mockMvc.perform(delete("/api/students", 1000))
 //                .andExpect(status().isOk());
+//
 //    }
-
 }
