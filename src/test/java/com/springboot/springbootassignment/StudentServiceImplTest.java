@@ -27,7 +27,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    public void testGetAllStudents() {
+    void testGetAllStudents() {
         // Prepare
         List<Course> set1 = new ArrayList<>();
         Course course1 = new Course(10, "DSA");
@@ -49,7 +49,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    public void testGetStudentById_ExistingStudent() {
+    void testGetStudentById_ExistingStudent() {
         // Prepare
         int studentId = 1;
         List<Course> set1 = new ArrayList<>();
@@ -69,7 +69,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    public void testGetStudentById_NonExistingStudent() {
+    void testGetStudentById_NonExistingStudent() {
         // Prepare
         int studentId = 1;
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
@@ -82,7 +82,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    public void testCreateStudent() {
+    void testCreateStudent() {
         // Prepare
         List<Course> set1 = new ArrayList<>();
         Course course1 = new Course(10, "DSA");
@@ -100,7 +100,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    public void testCreateStudent_Exception() {
+    void testCreateStudent_Exception() {
         // Prepare
         List<Course> set1 = new ArrayList<>();
         Course course1 = new Course(10, "DSA");
@@ -117,7 +117,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    public void testUpdateStudent_ExistingStudent() {
+    void testUpdateStudent_ExistingStudent() {
         // Prepare
         List<Course> set1 = new ArrayList<>();
         Course course1 = new Course(10, "DSA");
@@ -139,7 +139,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    public void testUpdateStudent_NonExistingStudent() {
+    void testUpdateStudent_NonExistingStudent() {
         // Prepare
         int studentId = 1;
         List<Course> set1 = new ArrayList<>();
@@ -158,7 +158,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    public void testDeleteStudent_ExistingStudent() {
+    void testDeleteStudent_ExistingStudent() {
         // Prepare
         int studentId = 1;
         List<Course> set1 = new ArrayList<>();
@@ -176,7 +176,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    public void testDeleteStudent_NonExistingStudent() {
+    void testDeleteStudent_NonExistingStudent() {
         // Prepare
         int studentId = 1;
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
