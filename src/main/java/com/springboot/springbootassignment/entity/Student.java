@@ -4,15 +4,15 @@ import jakarta.persistence.*;
 import java.util.*;
 // db name : students_database, table name : students
 @Entity
-@Table(name = "students")
+@Table(name = "student")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int id;
+    @Column(name="roll_number")
+    public int student_id;
 
     @Column(name="first_name")
     private String firstName;
@@ -20,16 +20,12 @@ public class Student {
     @Column(name="last_name")
     private String lastName;
 
-    @Column(name="email")
+    @Column(name="email", unique = true)
     private String email;
 
-    @Column(name="phone_number")
-    private String phoneNumber;
-
-    // let one course belong to one student
-    @OneToOne(cascade=CascadeType.ALL)
-    // id = child class from course
-    @JoinColumn(name= "course_id", referencedColumnName = "id")
-    private Course course;
+    // one student many different courses (in course table there will be a column with student_id)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="student_id")
+    private List<Course> courses;
 
 }

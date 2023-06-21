@@ -1,6 +1,6 @@
 package com.springboot.springbootassignment.service;
-
-import com.springboot.springbootassignment.entity.Student;
+import org.springframework.http.*;
+import com.springboot.springbootassignment.entity.*;
 import java.util.List;
 
 public interface StudentService {
@@ -8,5 +8,5 @@ public interface StudentService {
     Student getStudentById(int id);
     Student createStudent(Student student);
     Student updateStudent(int id, Student updatedStudent);
-    void deleteStudent(int id);
+    Student deleteStudent(int id);
 }

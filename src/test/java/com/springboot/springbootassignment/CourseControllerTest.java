@@ -2,6 +2,7 @@ package com.springboot.springbootassignment.controller;
 import com.springboot.springbootassignment.entity.*;
 import com.springboot.springbootassignment.service.CourseService;
 import java.util.*;
+import org.junit.Before;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.*;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.mockito.InjectMocks;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @WebMvcTest(CourseController.class)
 class CourseControllerTest {
@@ -26,20 +33,19 @@ class CourseControllerTest {
 
     @MockBean
     CourseService courseService;
-    // MOCK STUDENTS
 
-//    Student s1 = new Student(45, "anku", "t", "a@com", "i397");
-//    Student s2 = new Student(4, "trupal", "t", "t@gmail", "i397");
-//    List<Student> stu = new ArrayList<>(Arrays.asList(s1, s2));
-//    List<Student> stu2 = new ArrayList<>(Arrays.asList(s1));
+    @InjectMocks
+    private CourseController courseController;
 
-//    @Before
-// void init() {
-    // MOCK COURSES
-    Course course1 = new Course(10, "DSA", 4);
-    Course course2 = new Course(20, "OS", 3);
-    Course course3 = new Course(30, "Linux programming", 3);
-//}
+    //
+    @Before
+    public void setup() {
+        mockMvc = MockMvcBuilders.standaloneSetup(courseController).build();
+
+    }
+    Course course1 = new Course(10, "DSA");
+    Course course2 = new Course(20, "OS");
+    Course course3 = new Course(30, "Linux programming");
 
 
     //----------------test for GET all---------------
@@ -64,18 +70,23 @@ class CourseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("courseName", is("Linux programming")));
     }
-
+    @Test
+    void testGetCourseById_Exception() {
+        when(courseService.getCourseById(1))
+                .thenThrow(new RuntimeException());
+        ResponseEntity<?> response = courseController.getCourseById(1);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
     //----------------test for POST-------------
 
     @Test
      void createCourseTest() throws Exception {
-        Course record = new Course(30, "Linux programming", 3);
+        Course record = new Course(30, "Linux programming");
         Mockito.when(courseService.createCourse(course3)).thenReturn(record);
         mockMvc.perform(post("/api/courses")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(course3)))
                          .andExpect(status().isOk())
-                .andExpect(jsonPath("$.courseCredits", is(3)))
                 .andExpect(jsonPath("$.courseName", is("Linux programming")));
     }
 }

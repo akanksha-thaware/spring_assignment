@@ -1,5 +1,5 @@
 package com.springboot.springbootassignment.controller;
-
+import org.springframework.http.*;
 import com.springboot.springbootassignment.entity.Student;
 import com.springboot.springbootassignment.service.StudentService;
 import org.springframework.web.bind.annotation.*;
@@ -16,26 +16,49 @@ public class StudentController {
     public List<Student> getAllStudents() {
         return studentService.getAllStudents();
     }
-    // id shoud be passed in URL
-    @GetMapping("/{id}")
-    public Student getStudentById(@PathVariable int id) {
-        return studentService.getStudentById(id);
-    }
-    // id and course array should be passed in body
-    @PostMapping
-    public Student createStudent(@RequestBody Student student) {
-        return studentService.createStudent(student);
-    }
-    // id shoud be passed in URL
-    @PutMapping("/{id}")
-    public Student updateStudent(@PathVariable int id, @RequestBody Student updatedStudent) {
-        return studentService.updateStudent(id, updatedStudent);
-    }
-    // id shoud be passed in URL
-    @DeleteMapping("/{id}")
-    public void deleteStudent(@PathVariable int id) {
-        studentService.deleteStudent(id);
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getStudentById(@PathVariable int id)
+    {
+        try {
+            Student student = studentService.getStudentById(id);
+            return ResponseEntity.ok(student);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createStudent(@RequestBody Student student) {
+        try{
+            Student stu = studentService.createStudent(student);
+            return ResponseEntity.ok(stu);
+        }
+        catch (RuntimeException ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateStudent(@PathVariable int id, @RequestBody Student updatedStudent) {
+        try{
+            Student stu = studentService.updateStudent(id, updatedStudent);
+            return ResponseEntity.ok(stu);
+        }
+        catch (RuntimeException ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteStudent(@PathVariable int id) {
+        try{
+            Student stu = studentService.deleteStudent(id);
+            return ResponseEntity.ok("deleted student : " + stu);
+        }
+        catch (RuntimeException ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
     }
 
 }

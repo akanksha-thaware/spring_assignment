@@ -2,87 +2,173 @@ package com.springboot.springbootassignment.controller;
 import com.springboot.springbootassignment.entity.*;
 import com.springboot.springbootassignment.service.StudentService;
 import java.util.*;
+import org.springframework.http.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
+import org.junit.runner.RunWith;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.mockito.*;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.junit.Before;
+import static org.mockito.Mockito.when;
+
+
 @WebMvcTest(StudentController.class)
-class StudentControllerTest {
+public class StudentControllerTest {
+
+    @MockBean
+    private StudentService studentService;
+
 
     @Autowired
     ObjectMapper mapper;
 
+    @InjectMocks
+    private StudentController studentController;
+
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    @MockBean
-    StudentService studentService;
-    // MOCK COURSES
-    Course set1 = new Course(10, "DSA", 4);
-    Course set2 = new Course(20, "OS", 3);
+    //
+    @Before
+    public void setup() {
+        mockMvc = MockMvcBuilders.standaloneSetup(studentController).build();
 
-    // MOCK STUDENTS
-    Student s1 = new Student(145, "akanksha", "t", "a@com", "1234567890", set1);
-    Student s2 = new Student(146, "trupal", "t", "t@gmail", "9876543210", set2);
-    Student s3 = new Student(150, "Raghav", "Narang", "r@gmail.com", "99817353610", set2);
+    }
 
-    //----------------test for GET all---------------
     @Test
-    void getAllStudents_success() throws Exception {
+    public void testGetAllStudents() throws Exception {
+        List<Course> set1 = new ArrayList<>();
+        Course course1 = new Course(10, "DSA");
+        set1.add(course1);
+        Student s1 = new Student(1, "John", "D", "johnmail", set1);
+        Student s2 = new Student(2, "Alice", "F", "alicemail", set1);
         List<Student> records = new ArrayList<>(Arrays.asList(s1, s2));
         Mockito.when(studentService.getAllStudents()).thenReturn(records);
-        mockMvc.perform(get("/api/students/")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/students/"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstName", is("John")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].lastName", is("F")));
+
+        // Verifying that the service method was called
+        Mockito.verify(studentService, Mockito.times(1)).getAllStudents();
+        Mockito.verifyNoMoreInteractions(studentService);
     }
 
-
-    //----------------test for GET Student by ID---------------
     @Test
     void getStudentById_success() throws Exception {
-        Mockito.when(studentService.getStudentById(146)).thenReturn(s2);
-        mockMvc.perform(get("/api/students/" + 146)
+        List<Course> set1 = new ArrayList<>();
+        Course course1 = new Course(10, "DSA");
+        set1.add(course1);
+        Student s1 = new Student(1, "John", "D", "johnmail", set1);
+        Mockito.when(studentService.getStudentById(1)).thenReturn(s1);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/students/" + 1)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("firstName", is("trupal")));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("firstName", is("John")));
     }
-
-    //----------------test for POST-------------
 
     @Test
-    void createStudentTest() throws Exception {
-        Student record = new Student(150, "Raghav", "Narang", "r@gmail.com", "99817353610", set2);
-        Mockito.when(studentService.createStudent(s3)).thenReturn(record);
-        mockMvc.perform(post("/api/students")
+    public void testGetStudentById_Exception() {
+        int studentId = 1;
+        when(studentService.getStudentById(studentId))
+                .thenThrow(new RuntimeException());
+        ResponseEntity<?> response = studentController.getStudentById(studentId);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+    @Test
+    public void testCreateStudent() throws Exception {
+        List<Course> set1 = new ArrayList<>();
+        Course course1 = new Course(10, "DSA");
+        set1.add(course1);
+        Student s1 = new Student(1, "John", "D", "johnmail", set1);
+        Mockito.when(studentService.createStudent(s1)).thenReturn(s1);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/students")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(s3)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("email", is("r@gmail.com")));
+                        .content(mapper.writeValueAsString(s1)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("email", is("johnmail")));
+
+    }
+    @Test
+    public void testCreateStudent_Exception() {
+        List<Course> set1 = new ArrayList<>();
+        Course course1 = new Course(10, "DSA");
+        set1.add(course1);
+        Student student = new Student(1, "John", "D", "johnmail", set1);
+        when(studentService.createStudent(student))
+                .thenThrow(new RuntimeException());
+        ResponseEntity<?> response = studentController.createStudent(student);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+    @Test
+    public void testDeleteStudent() throws Exception {
+        // Mocking the service response
+        List<Course> set1 = new ArrayList<>();
+        Course course1 = new Course(10, "DSA");
+        set1.add(course1);
+        Student student = new Student(1, "John", "D", "johnmail", set1);
+        Mockito.when(studentService.deleteStudent(1)).thenReturn(student);
+
+        // Performing the DELETE request
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/students/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("deleted student : " + student.toString()));
+
+        // Verifying that the service method was called
+        Mockito.verify(studentService, Mockito.times(1)).deleteStudent(1);
+        Mockito.verifyNoMoreInteractions(studentService);
     }
 
+    @Test
+    public void testDeleteStudent_Exception() {
+        when(studentService.deleteStudent(1))
+                .thenThrow(new RuntimeException());
+        ResponseEntity<?> response = studentController.deleteStudent(1);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
 //    //----------------test for PUT-------------
 
     @Test
     void updateStudentTest() throws Exception {
-        Student updatedrecord = new Student(150, "Raghav", "N", "raghav@gmail.com", "99817353610", set2);
-        Student body = new Student(150, "Raghav", "N", "raghav@gmail.com", "99817353610", set2);
-        Mockito.when(studentService.updateStudent(150, body)).thenReturn(updatedrecord);
-        mockMvc.perform(put("/api/students/" + 150)
+        // Mocking the service response
+        List<Course> set1 = new ArrayList<>();
+        Course course1 = new Course(10, "DSA");
+        set1.add(course1);
+        Student body = new Student(150, "Raghav", "N", "raghav@gmail.com", set1);
+        Mockito.when(studentService.updateStudent(150, body)).thenReturn(body);
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/students/" + 150)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("email", is("raghav@gmail.com")))
-                .andExpect(jsonPath("lastName", is("N")));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("email", is("raghav@gmail.com")))
+                .andExpect(MockMvcResultMatchers.jsonPath("lastName", is("N")));
+    }
+
+    @Test
+    public void testUpdateStudent_Exception() {
+        List<Course> set1 = new ArrayList<>();
+        Course course1 = new Course(10, "DSA");
+        set1.add(course1);
+        Student student = new Student(1, "John", "D", "johnmail", set1);
+        when(studentService.updateStudent(1, student))
+                .thenThrow(new RuntimeException());
+        ResponseEntity<?> response = studentController.updateStudent(1, student);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
 }
+

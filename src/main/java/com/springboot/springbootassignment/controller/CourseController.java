@@ -1,4 +1,5 @@
 package com.springboot.springbootassignment.controller;
+import org.springframework.http.*;
 import com.springboot.springbootassignment.entity.Course;
 import com.springboot.springbootassignment.service.CourseService;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +17,14 @@ public class CourseController {
         return courseService.getAllCourses();
     }
     @GetMapping("/{id}")
-    public Course getCourseById(@PathVariable int id) {
-        return courseService.getCourseById(id);
+    public ResponseEntity<?> getCourseById(@PathVariable int id)
+    {
+        try {
+            Course course = courseService.getCourseById(id);
+            return ResponseEntity.ok(course);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
     }
     @PostMapping
     public Course createCourse(@RequestBody Course course) {

@@ -1,10 +1,9 @@
 package com.springboot.springbootassignment.service;
-
+import org.springframework.http.*;
 import com.springboot.springbootassignment.dao.StudentRepository;
-import com.springboot.springbootassignment.entity.Student;
+import com.springboot.springbootassignment.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +30,6 @@ public class StudentServiceImpl implements StudentService {
             s = result.get();
         }
         else {
-            // we didn't find the student
             throw new RuntimeException("Did not find student id - " + id);
         }
         return s;
@@ -39,21 +37,41 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student createStudent(Student student) {
-        return studentRepository.save(student);
+        try{
+            return studentRepository.save(student);
+        }
+        catch(Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
+
 
     @Override
     public Student updateStudent(int id, Student updatedStudent) {
-        Student existingStudent = getStudentById(id);
-        existingStudent.setFirstName(updatedStudent.getFirstName());
-        existingStudent.setLastName(updatedStudent.getLastName());
-        existingStudent.setEmail(updatedStudent.getEmail());
-        existingStudent.setPhoneNumber(updatedStudent.getPhoneNumber());;
-        return studentRepository.save(existingStudent);
+        Optional<Student> result = studentRepository.findById(id);
+        if (result.isPresent()) {
+            Student existingStudent = getStudentById(id);
+            existingStudent.setFirstName(updatedStudent.getFirstName());
+            existingStudent.setLastName(updatedStudent.getLastName());
+            existingStudent.setEmail(updatedStudent.getEmail());
+            return studentRepository.save(existingStudent);
+        }
+        else {
+            throw new RuntimeException("Cannot update: Did not find student id - " + id);
+        }
     }
 
     @Override
-    public void deleteStudent(int id) {
-        studentRepository.deleteById(id);
+    public Student deleteStudent(int id){
+        Optional<Student> result = studentRepository.findById(id);
+        Student s = null;
+        if (result.isPresent()) {
+            s = result.get();
+            studentRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Cannot delete: Did not find student id - " + id);
+        }
+        return s;
     }
+
 }
