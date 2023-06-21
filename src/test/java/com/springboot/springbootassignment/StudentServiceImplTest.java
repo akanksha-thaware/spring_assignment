@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class StudentServiceImplTest {
+class StudentServiceImplTest {
 
     @Mock
     private StudentRepository studentRepository;

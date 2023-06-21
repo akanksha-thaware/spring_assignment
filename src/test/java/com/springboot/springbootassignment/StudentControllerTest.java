@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 
 
 @WebMvcTest(StudentController.class)
-public class StudentControllerTest {
+class StudentControllerTest {
 
     @MockBean
     private StudentService studentService;
@@ -46,7 +46,7 @@ public class StudentControllerTest {
     }
 
     @Test
-    public void testGetAllStudents() throws Exception {
+    void testGetAllStudents() throws Exception {
         List<Course> set1 = new ArrayList<>();
         Course course1 = new Course(10, "DSA");
         set1.add(course1);
@@ -79,7 +79,7 @@ public class StudentControllerTest {
     }
 
     @Test
-    public void testGetStudentById_Exception() {
+    void testGetStudentById_Exception() {
         int studentId = 1;
         when(studentService.getStudentById(studentId))
                 .thenThrow(new RuntimeException());
@@ -87,7 +87,7 @@ public class StudentControllerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
     @Test
-    public void testCreateStudent() throws Exception {
+    void testCreateStudent() throws Exception {
         List<Course> set1 = new ArrayList<>();
         Course course1 = new Course(10, "DSA");
         set1.add(course1);
@@ -101,7 +101,7 @@ public class StudentControllerTest {
 
     }
     @Test
-    public void testCreateStudent_Exception() {
+    void testCreateStudent_Exception() {
         List<Course> set1 = new ArrayList<>();
         Course course1 = new Course(10, "DSA");
         set1.add(course1);
@@ -113,7 +113,7 @@ public class StudentControllerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
     @Test
-    public void testDeleteStudent() throws Exception {
+    void testDeleteStudent() throws Exception {
         // Mocking the service response
         List<Course> set1 = new ArrayList<>();
         Course course1 = new Course(10, "DSA");
@@ -132,7 +132,7 @@ public class StudentControllerTest {
     }
 
     @Test
-    public void testDeleteStudent_Exception() {
+    void testDeleteStudent_Exception() {
         when(studentService.deleteStudent(1))
                 .thenThrow(new RuntimeException());
         ResponseEntity<?> response = studentController.deleteStudent(1);
@@ -158,7 +158,7 @@ public class StudentControllerTest {
     }
 
     @Test
-    public void testUpdateStudent_Exception() {
+    void testUpdateStudent_Exception() {
         List<Course> set1 = new ArrayList<>();
         Course course1 = new Course(10, "DSA");
         set1.add(course1);
